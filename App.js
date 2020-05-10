@@ -6,14 +6,30 @@
  * @flow strict-local
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, FlatList, ScrollView, TouchableHighlight, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import Cita from './componentes/Cita';
 import Formulario from './componentes/Formulario';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 const App = () => {
+  const [citas, setcitas] = useState([])
 const [mostrarForm, guardarMostrarForm] = useState(false)
+
+
+useEffect(() => {
+  const obtenerCitasStorage = async () => {
+    try {
+      const citasStorage = await AsyncStorage.getItem('citas');
+      if(citasStorage) {
+        setCitas(JSON.parse(citasStorage))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+})
 
 // definir state de citas
 const[citas, setCitas] = useState([
@@ -25,9 +41,12 @@ const[citas, setCitas] = useState([
 //Elimina pacientes del state
 
 const eliminarPaciente = id => {
-  setCitas( (citasActuales) => {
-        return citasActuales.filter( cita => cita.id !== id)
-  })
+
+  const citasFiltradas = citas.filter(citas.filter( cita => cita.id !== id))
+
+  setCitas(citasFiltradas)
+  guardarCitasStorage()
+  
 }
 
   //Mostrar formulario
@@ -38,6 +57,15 @@ const eliminarPaciente = id => {
 
 const cerrarTeclado = () => {
   Keyboard.dismiss();
+}
+
+//Almacenar citas
+const guardarCitasStorage = async (citasJSON) => {
+  try {
+    await AsyncStorage.setItem('citas', citasJSON);
+  } catch (error) {
+    console.log(error)
+  }
 }
 
   return (
@@ -59,6 +87,7 @@ const cerrarTeclado = () => {
         citas={citas}
         setCitas={setCitas}
         guardarMostrarForm={guardarMostrarForm}
+        guardarCitasStorage={guardarCitasStorage}
       />
       </View>
     ) : (<>

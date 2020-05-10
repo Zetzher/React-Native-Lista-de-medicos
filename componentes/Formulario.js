@@ -4,7 +4,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import shortid from 'shortid';
 
 
-const Formulario = ({citas, setCitas, guardarMostrarForm}) => {
+const Formulario = ({citas, setCitas, guardarMostrarForm, guardarCitasStorage}) => {
 
     const [paciente, guardarPaciente] = useState('');
     const [propietario, guardarPropietario] = useState('');
@@ -65,6 +65,9 @@ const Formulario = ({citas, setCitas, guardarMostrarForm}) => {
    // Agregar al state
    const citasNuevo = [...citas, cita];
    setCitas(citasNuevo);
+
+
+   guardarCitasStorage(JSON.stringify)
 
 
    guardarMostrarForm(false)
